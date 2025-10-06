@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: radial-gradient(circle at top, #0f0f0f, #000);
+  color: #fff;
+  font-family: 'Bebas Neue', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+  overflow: hidden;
+}
+
+.container {
+  width: 100%;
+  max-width: 900px;
+  padding: 0 20px;
+  animation: fadeIn 2s ease;
+}
+
+.glitch-text {
+  position: relative;
+  font-size: 8vw;
+  color: #fff;
+  text-transform: uppercase;
+  text-shadow: 0 0 15px #0ff, 0 0 30px #0ff;
+  animation: flicker 2s infinite;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  width: 100%;
+  color: #0ff;
+  background: transparent;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.glitch-text::before {
+  animation: glitchTop 2s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+  color: #f0f;
+  animation: glitchBottom 2s infinite linear alternate-reverse;
+}
+
+.creed-img {
+  width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  margin-top: 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 25px #0ff;
+  opacity: 0;
+  animation: fadeUp 2s ease forwards 1s;
+}
+
+.subtext {
+  margin-top: 25px;
+  font-size: 1.5rem;
+  color: #aaa;
+  letter-spacing: 2px;
+  animation: fadeIn 3s ease 2s forwards;
+  opacity: 0;
+}
+
+/* 🔥 Анимации */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeUp {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes glitchTop {
+  0% { clip: rect(0, 9999px, 0, 0); }
+  10% { clip: rect(10px, 9999px, 85px, 0); transform: translate(-5px, -5px); }
+  20% { clip: rect(30px, 9999px, 120px, 0); transform: translate(5px, 5px); }
+  30% { clip: rect(70px, 9999px, 140px, 0); transform: translate(-3px, 0); }
+  100% { clip: rect(0, 9999px, 0, 0); transform: none; }
+}
+
+@keyframes glitchBottom {
+  0% { clip: rect(0, 9999px, 0, 0); }
+  10% { clip: rect(85px, 9999px, 140px, 0); transform: translate(5px, 5px); }
+  20% { clip: rect(120px, 9999px, 180px, 0); transform: translate(-5px, -5px); }
+  30% { clip: rect(60px, 9999px, 100px, 0); transform: translate(3px, 0); }
+  100% { clip: rect(0, 9999px, 0, 0); transform: none; }
+}
+
+/* 📱 Адаптация */
+@media (max-width: 768px) {
+  .glitch-text {
+    font-size: 12vw;
+  }
+
+  .subtext {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .glitch-text {
+    font-size: 15vw;
+  }
+
+  .subtext {
+    font-size: 1rem;
+  }
+}
