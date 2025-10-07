@@ -1,136 +1,191 @@
-const canvas = document.getElementById('bgCanvas');
-const ctx = canvas.getContext('2d');
-const hackerGif = document.getElementById('hackerGif');
-const finalText = document.getElementById('finalText');
+const cursor = document.querySelector('.cursor');
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let cursorX = mouseX;
+        let cursorY = mouseY;
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
 
-// ===== параметры гифки =====
-let width = 150;
-let height = 150;
-let x = Math.random()*(canvas.width-width);
-let y = Math.random()*(canvas.height-height);
-let dx = 4 + Math.random()*2;
-let dy = 4 + Math.random()*2;
+        document.addEventListener('mousedown', () => cursor.classList.add('active'));
+        document.addEventListener('mouseup', () => cursor.classList.remove('active'));
 
-// ===== trail и частицы =====
-let trail = [];
-let particles = [];
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+            cursor.style.left = cursorX - 10 + 'px';
+            cursor.style.top = cursorY - 10 + 'px';
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
 
-// ===== финал =====
-let hits = 0;
-const maxHits = 50;
-let finale = false;
+        // Logo interaction with magnetic effect
+        const logoChars = document.querySelectorAll('.logo-char');
+        const logo = document.getElementById('logo');
+        
+        document.addEventListener('mousemove', (e) => {
+            const rect = logo.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            logoChars.forEach((char, index) => {
+                const charRect = char.getBoundingClientRect();
+                const charCenterX = charRect.left + charRect.width / 2;
+                const charCenterY = charRect.top + charRect.height / 2;
+                
+                const deltaX = e.clientX - charCenterX;
+                const deltaY = e.clientY - charCenterY;
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                
+                if (distance < 200) {
+                    const force = (200 - distance) / 200;
+                    const moveX = deltaX * force * 0.2;
+                    const moveY = deltaY * force * 0.2;
+                    const rotate = (index - 2) * force * 5;
+                    char.style.transform = `translate(${moveX}px, ${moveY}px) rotate(${rotate}deg) scale(${1 + force * 0.1})`;
+                } else {
+                    char.style.transform = 'translate(0, 0) rotate(0deg) scale(1)';
+                }
+            });
+        });
 
-// ===== цвета =====
-function randomColor(){
-  const colors = ['#00d8c9','#ff3c3c','#ffd300','#ff6cff','#00ff6b'];
-  return colors[Math.floor(Math.random()*colors.length)];
-}
-let currentColor = randomColor();
+        // Fluid simulation
+        const fluidCanvas = document.getElementById('fluid-canvas');
+        const fluidCtx = fluidCanvas.getContext('2d');
+        fluidCanvas.width = window.innerWidth;
+        fluidCanvas.height = window.innerHeight;
 
-// ===== частицы =====
-function addParticle(px,py,color){
-  particles.push({x:px,y:py,r:2+Math.random()*3,alpha:1,speedY:-1-Math.random(),speedX:(Math.random()-0.5),color});
-}
+        const particles = [];
+        const particleCount = 100;
 
-// ===== hex -> rgb =====
-function hexToRgb(hex){
-  hex = hex.replace('#','');
-  let r = parseInt(hex.substring(0,2),16);
-  let g = parseInt(hex.substring(2,4),16);
-  let b = parseInt(hex.substring(4,6),16);
-  return r+','+g+','+b;
-}
+        class FluidParticle {
+            constructor() {
+                this.x = Math.random() * fluidCanvas.width;
+                this.y = Math.random() * fluidCanvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 2 + 1;
+                this.life = Math.random();
+            }
 
-// ===== финальная траектория в угол =====
-function goToCorner(){
-  let targetX = canvas.width - width;
-  let targetY = canvas.height - height;
-  let step = 10;
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
 
-  function move(){
-    if(x<targetX) x+=step;
-    if(y<targetY) y+=step;
+                // Mouse interaction
+                const dx = mouseX - this.x;
+                const dy = mouseY - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < 150) {
+                    const force = (150 - dist) / 150;
+                    this.vx += dx * force * 0.01;
+                    this.vy += dy * force * 0.01;
+                }
 
-    hackerGif.style.left = x+"px";
-    hackerGif.style.top = y+"px";
+                // Damping
+                this.vx *= 0.99;
+                this.vy *= 0.99;
 
-    addParticle(x+width/2,y+height/2,currentColor);
+                // Boundaries
+                if (this.x < 0 || this.x > fluidCanvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > fluidCanvas.height) this.vy *= -1;
 
-    if(x<targetX || y<targetY){
-      requestAnimationFrame(move);
-    } else {
-      finalText.style.transform = 'translate(-50%,-50%) scale(1)';
-      finalText.style.opacity = 1;
-      for(let i=0;i<100;i++) addParticle(x+width/2,y+height/2,currentColor);
-    }
-  }
-  move();
-}
+                this.life += 0.001;
+                if (this.life > 1) this.life = 0;
+            }
 
-// ===== анимация =====
-function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+            draw() {
+                fluidCtx.beginPath();
+                fluidCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                const hue = (this.life * 60 + 180) % 360;
+                fluidCtx.fillStyle = `hsla(${hue}, 70%, 60%, ${0.3 + this.life * 0.3})`;
+                fluidCtx.fill();
+            }
+        }
 
-  // trail
-  trail.push({x:x+width/2, y:y+height/2, alpha:0.2, color:currentColor});
-  if(trail.length>20) trail.shift();
-  trail.forEach(p=>{
-    ctx.fillStyle = `rgba(${hexToRgb(p.color)},${p.alpha})`;
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,width*0.35,0,Math.PI*2);
-    ctx.fill();
-  });
+        // Initialize particles
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new FluidParticle());
+        }
 
-  // частицы
-  particles.forEach((p,i)=>{
-    ctx.fillStyle = `rgba(${hexToRgb(p.color)},${p.alpha})`;
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fill();
-    p.x += p.speedX;
-    p.y += p.speedY;
-    p.alpha -=0.03;
-    if(p.alpha<=0) particles.splice(i,1);
-  });
+        function animateFluid() {
+            fluidCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            fluidCtx.fillRect(0, 0, fluidCanvas.width, fluidCanvas.height);
 
-  if(!finale){
-    x += dx;
-    y += dy;
+            // Draw connections
+            particles.forEach((p1, i) => {
+                particles.slice(i + 1).forEach(p2 => {
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist < 100) {
+                        fluidCtx.beginPath();
+                        fluidCtx.moveTo(p1.x, p1.y);
+                        fluidCtx.lineTo(p2.x, p2.y);
+                        const alpha = (100 - dist) / 100 * 0.2;
+                        fluidCtx.strokeStyle = `rgba(100, 200, 255, ${alpha})`;
+                        fluidCtx.lineWidth = 0.5;
+                        fluidCtx.stroke();
+                    }
+                });
+            });
 
-    let hit=false;
-    if(x+width>canvas.width || x<0){ dx*=-1; hit=true; }
-    if(y+height>canvas.height || y<0){ dy*=-1; hit=true; }
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
 
-    if(hit){
-      hits++;
-      currentColor = randomColor();
-      hackerGif.style.transform = `scale(${1+Math.random()*0.15}) rotate(${(Math.random()-0.5)*10}deg)`;
-      for(let i=0;i<15;i++) addParticle(x+width/2,y+height/2,currentColor);
-    } else {
-      hackerGif.style.transform = 'scale(1) rotate(0deg)';
-    }
+            requestAnimationFrame(animateFluid);
+        }
+        animateFluid();
 
-    hackerGif.style.left = x+"px";
-    hackerGif.style.top = y+"px";
+        // Displacement effect
+        const dispCanvas = document.getElementById('displacement-canvas');
+        const dispCtx = dispCanvas.getContext('2d');
+        dispCanvas.width = window.innerWidth;
+        dispCanvas.height = window.innerHeight;
 
-    if(hits>=maxHits){
-      finale = true;
-      goToCorner();
-    }
-  }
+        let time = 0;
+        function animateDisplacement() {
+            dispCtx.clearRect(0, 0, dispCanvas.width, dispCanvas.height);
+            
+            const gradient = dispCtx.createRadialGradient(
+                mouseX, mouseY, 0,
+                mouseX, mouseY, 300
+            );
+            
+            gradient.addColorStop(0, `rgba(0, 255, 200, ${0.3 + Math.sin(time * 0.05) * 0.2})`);
+            gradient.addColorStop(0.5, 'rgba(100, 150, 255, 0.1)');
+            gradient.addColorStop(1, 'transparent');
+            
+            dispCtx.fillStyle = gradient;
+            dispCtx.fillRect(0, 0, dispCanvas.width, dispCanvas.height);
+            
+            time++;
+            requestAnimationFrame(animateDisplacement);
+        }
+        animateDisplacement();
 
-  requestAnimationFrame(draw);
-}
+        // Floating elements
+        const floatingContainer = document.getElementById('floating-elements');
+        for (let i = 0; i < 30; i++) {
+            const item = document.createElement('div');
+            item.className = 'float-item';
+            item.style.left = Math.random() * 100 + '%';
+            item.style.setProperty('--tx', (Math.random() - 0.5) * 200 + 'px');
+            item.style.animationDelay = Math.random() * 20 + 's';
+            item.style.animationDuration = (15 + Math.random() * 10) + 's';
+            floatingContainer.appendChild(item);
+        }
 
-draw();
-
-// ===== resize =====
-window.addEventListener('resize',()=>{
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  if(x+width>canvas.width) x = canvas.width-width;
-  if(y+height>canvas.height) y = canvas.height-height;
-});
+        // Resize handler
+        window.addEventListener('resize', () => {
+            fluidCanvas.width = window.innerWidth;
+            fluidCanvas.height = window.innerHeight;
+            dispCanvas.width = window.innerWidth;
+            dispCanvas.height = window.innerHeight;
+        });
