@@ -1,5 +1,5 @@
 {
-  "name": "creed-demo",
+  "name": "creed",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -28,5 +28,5 @@
     "globals": "^16.4.0",
     "vite": "^7.1.7"
   },
-  "homepage": "https://zef26.github.io/creed-demo"
+  "homepage": "https://zef26.github.io/creed"
 }
