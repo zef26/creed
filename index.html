@@ -1,57 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CREED — IT Company</title>
-    <link rel="stylesheet" href="./style.css">
-    <link rel="icon" href="./logoCreed.png">
-    
-</head>
-<body>
-     Fluid simulation canvas 
-    <canvas id="fluid-canvas"></canvas>
-    
-     Displacement effect canvas 
-    <canvas id="displacement-canvas"></canvas>
-
-     Floating particles 
-    <div class="floating-elements" id="floating-elements"></div>
-
-     Custom cursor 
-    <div class="cursor"></div>
-
-     SVG filters 
-    <svg>
-        <defs>
-            <filter id="distortion">
-                <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="3" result="noise" seed="2">
-                    <animate attributeName="baseFrequency" dur="60s" values="0.01;0.02;0.01" repeatCount="indefinite"/>
-                </feTurbulence>
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
-            </filter>
-        </defs>
-    </svg>
-
-     Main content 
-    <div class="content">
-        <div class="logo-container">
-            <div class="logo" id="logo">
-                <span class="logo-char">C</span><span class="logo-char">R</span><span class="logo-char">E</span><span class="logo-char">E</span><span class="logo-char">D</span>
-            </div>
-        </div>
-        
-        <div class="subtitle" id="subtitle">
-            <span class="subtitle-char" style="--i: 0">I</span><span class="subtitle-char" style="--i: 1">N</span><span class="subtitle-char" style="--i: 2">N</span><span class="subtitle-char" style="--i: 3">O</span><span class="subtitle-char" style="--i: 4">V</span><span class="subtitle-char" style="--i: 5">A</span><span class="subtitle-char" style="--i: 6">T</span><span class="subtitle-char" style="--i: 7">I</span><span class="subtitle-char" style="--i: 8">O</span><span class="subtitle-char" style="--i: 9">N</span>
-        </div>
-    </div>
-
-     Info elements 
-    <div class="info-bar"></div>
-    <div class="info-text">Launching Soon</div>
-    <div class="corner-label top-left">CREED IT</div>
-    <div class="corner-label top-right">2025</div>
-
-   <script src="./script.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon"  href="src/assets/logoCreed.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio | CREED</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
