@@ -1,0 +1,335 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #070C14;
+  --color-surface: #0D1421;
+  --color-surface-elevated: #14202E;
+  --color-foreground: #F0F4F8;
+  --color-muted: #4A6580;
+  --color-accent: #0EA5E9;
+  --color-accent-hover: #0284C7;
+
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --radius: 0.75rem;
+}
+
+/* ─── CSS Property (spinning border) ─── */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-background); }
+::-webkit-scrollbar-thumb { background: var(--color-surface-elevated); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+
+/* ─── Gradient text ─── */
+.gradient-text {
+  background: linear-gradient(135deg, #7DD3F8 0%, #0EA5E9 45%, #0369A1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Gradient border utility ─── */
+.gradient-border {
+  position: relative;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  isolation: isolate;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(14,165,233,0.35), rgba(14,165,233,0.08), rgba(14,165,233,0.02));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.gradient-border:hover::before {
+  opacity: 1;
+}
+
+/* ─── Spinning conic gradient border (hover) ─── */
+.spin-border {
+  position: relative;
+}
+
+.spin-border::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(from var(--angle), transparent 50%, #0EA5E9 65%, #38BDF8 75%, #7DD3F8 80%, transparent 90%);
+  animation: borderSpin 3s linear infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.spin-border:hover::after {
+  opacity: 1;
+}
+
+@keyframes borderSpin {
+  to { --angle: 360deg; }
+}
+
+/* ─── Hero ambient blobs ─── */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(100px);
+}
+
+.blob-1 {
+  width: 1000px;
+  height: 1000px;
+  background: radial-gradient(circle at center, rgba(14,165,233,0.22) 0%, transparent 60%);
+  top: -500px;
+  left: -300px;
+  animation: blob-drift 24s ease-in-out infinite alternate;
+}
+
+.blob-2 {
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle at center, rgba(3,105,161,0.18) 0%, transparent 60%);
+  bottom: -300px;
+  right: -200px;
+  animation: blob-drift 20s ease-in-out infinite alternate-reverse;
+}
+
+.blob-3 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle at center, rgba(56,189,248,0.12) 0%, transparent 60%);
+  top: 30%;
+  left: 42%;
+  animation: blob-drift 28s ease-in-out infinite alternate;
+  animation-delay: -10s;
+}
+
+@keyframes blob-drift {
+  0%   { transform: translate(0px, 0px) scale(1); }
+  30%  { transform: translate(50px, -60px) scale(1.06); }
+  70%  { transform: translate(-30px, 45px) scale(0.95); }
+  100% { transform: translate(40px, -25px) scale(1.03); }
+}
+
+/* ─── Hero grid ─── */
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(14,165,233,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14,165,233,0.04) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+/* ─── Section label shimmer ─── */
+.section-label {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #0EA5E9 0%, #7DD3F8 40%, #38BDF8 60%, #0EA5E9 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmerLabel 4s linear infinite;
+}
+
+@keyframes shimmerLabel {
+  0%   { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ─── Hero line reveal animation ─── */
+@keyframes lineReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(110%) skewY(2deg);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) skewY(0);
+    filter: blur(0);
+  }
+}
+
+.line-reveal {
+  animation: lineReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+/* ─── Particle float ─── */
+@keyframes particleFloat {
+  0% {
+    transform: translateY(0) scale(0.5);
+    opacity: 0;
+  }
+  8% { opacity: 1; }
+  90% { opacity: 0.4; }
+  100% {
+    transform: translateY(-85vh) scale(0.2);
+    opacity: 0;
+  }
+}
+
+/* ─── Hero scan line ─── */
+@keyframes gridScan {
+  0%   { transform: translateY(-100%); opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateY(200%); opacity: 0; }
+}
+
+/* ─── Button shimmer sweep ─── */
+.btn-shimmer {
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -60%;
+  left: -120%;
+  width: 50%;
+  height: 220%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.18) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  transition: none;
+}
+
+.btn-shimmer:hover::after {
+  animation: shimmerSweep 0.55s ease-in-out forwards;
+}
+
+@keyframes shimmerSweep {
+  0%   { left: -120%; }
+  100% { left: 160%; }
+}
+
+/* ─── Base fade animations ─── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(0.9); opacity: 0.8; }
+  70%  { transform: scale(1.4); opacity: 0; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+/* ─── Glow pulse on status dot ─── */
+.pulse-dot {
+  position: relative;
+}
+.pulse-dot::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+/* ─── Scroll progress bar ─── */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #0369A1, #0EA5E9, #38BDF8, #7DD3F8);
+  z-index: 200;
+  transition: width 0.08s linear;
+  box-shadow: 0 0 10px rgba(14,165,233,0.7), 0 0 20px rgba(14,165,233,0.3);
+}
+
+/* ─── Custom cursor ─── */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+/* ─── Typewriter cursor blink ─── */
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ─── Gentle float up/down ─── */
+@keyframes floatY {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-7px); }
+}
+
+/* ─── Terminal line appear ─── */
+@keyframes termLine {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ─── Badge glow ─── */
+@keyframes badgeGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(14,165,233,0); }
+  50%       { box-shadow: 0 0 20px 4px rgba(14,165,233,0.15); }
+}
