@@ -8,7 +8,7 @@ const PROJECT_META = [
   { color: "#4ade80", image: "/portfolio/siyobferma.jpg", url: "https://siyobferma.uz" },
   { color: "#38BDF8", image: "/portfolio/qanchachiqadi.jpg", url: "https://qanchachiqadi.uz" },
   { color: "#a78bfa", image: "/portfolio/qoshni.jpg", url: "https://qoshni.uz", inDevelopment: true },
-  { color: "#fb923c", mockup: 3 }, // Parcha Track — internal system, no public site
+  { color: "#fb923c", image: "/portfolio/parcha-track.jpg" }, // Parcha Track — internal system, no public site
   { color: "#fbbf24", image: "/portfolio/parcha-sklad.jpg" }, // Parcha Sklad — 1C, internal
 ]
 
