@@ -3,12 +3,12 @@ import { useEffect, useRef, useState } from "react"
 import { useLanguage } from "../../context/LanguageContext"
 import CanvasBg from "../ui/CanvasBg"
 
-// mockup = index into MOCKUPS below
+// image = screenshot in public/portfolio; mockup = index into MOCKUPS (used when there is no image)
 const PROJECT_META = [
-  { color: "#4ade80", mockup: 1 }, // Siyob Ferma — website
-  { color: "#38BDF8", mockup: 0 }, // Qancha chiqadi — calculators
-  { color: "#a78bfa", mockup: 5 }, // Qo'shni — platform / CRM
-  { color: "#fb923c", mockup: 3 }, // Parcha Track — checkpoint system
+  { color: "#4ade80", image: "/portfolio/siyobferma.jpg", url: "https://siyobferma.uz" },
+  { color: "#38BDF8", image: "/portfolio/qanchachiqadi.jpg", url: "https://qanchachiqadi.uz" },
+  { color: "#a78bfa", image: "/portfolio/qoshni.jpg", url: "https://qoshni.uz", inDevelopment: true },
+  { color: "#fb923c", mockup: 3 }, // Parcha Track — internal system, no public site
 ]
 
 // CSS-only mockup visuals
@@ -133,13 +133,16 @@ const MOCKUPS = [
   ),
 ]
 
-function ProjectCard({ project, meta, index, isVisible }) {
+function ProjectCard({ project, meta, index, isVisible, labels }) {
   const [hovered, setHovered] = useState(false)
   const MockupComponent = MOCKUPS[meta.mockup]
+  const Tag = meta.url ? "a" : "div"
+  const host = meta.url?.replace(/^https?:\/\//, "")
 
   return (
-    <div
-      className="relative rounded-2xl overflow-hidden cursor-default"
+    <Tag
+      {...(meta.url ? { href: meta.url, target: "_blank", rel: "noopener noreferrer" } : {})}
+      className={`relative block rounded-2xl overflow-hidden ${meta.url ? "cursor-pointer" : "cursor-default"}`}
       style={{
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? "translateY(0)" : "translateY(28px)",
@@ -181,7 +184,7 @@ function ProjectCard({ project, meta, index, isVisible }) {
           className="ml-1 text-[10px] font-mono transition-colors duration-300"
           style={{ color: hovered ? `${meta.color}99` : "rgba(255,255,255,0.2)" }}
         >
-          {project.category.toLowerCase().replace(/\s+/g, "-")}.ts
+          {host || `${project.category.toLowerCase().replace(/\s+/g, "-")}.ts`}
         </span>
         <div className="ml-auto">
           <span
@@ -201,15 +204,37 @@ function ProjectCard({ project, meta, index, isVisible }) {
           background: "linear-gradient(135deg, #080F1C, #070C14)",
         }}
       >
-        {/* Dot grid */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(${meta.color}18 1px, transparent 1px)`,
-            backgroundSize: "20px 20px",
-          }}
-        />
-        {MockupComponent && <MockupComponent color={meta.color} />}
+        {meta.image ? (
+          <img
+            src={meta.image}
+            alt={project.title}
+            loading="lazy"
+            className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700"
+            style={{ transform: hovered ? "scale(1.03)" : "scale(1)" }}
+          />
+        ) : (
+          <>
+            {/* Dot grid */}
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `radial-gradient(${meta.color}18 1px, transparent 1px)`,
+                backgroundSize: "20px 20px",
+              }}
+            />
+            {MockupComponent && <MockupComponent color={meta.color} />}
+          </>
+        )}
+
+        {meta.inDevelopment && (
+          <span
+            className="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
+            style={{ background: "rgba(7,12,20,0.8)", color: "#fbbf24", border: "1px solid rgba(251,191,36,0.35)", backdropFilter: "blur(6px)" }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#fbbf24] animate-pulse" />
+            {labels.inDevelopment}
+          </span>
+        )}
       </div>
 
       {/* Card body */}
@@ -236,8 +261,16 @@ function ProjectCard({ project, meta, index, isVisible }) {
         <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.32)" }}>
           {project.description}
         </p>
+        {meta.url && (
+          <span
+            className="inline-flex items-center gap-1 mt-3 text-xs font-semibold transition-colors duration-300"
+            style={{ color: hovered ? meta.color : "rgba(255,255,255,0.45)" }}
+          >
+            {labels.visit} — {host} ↗
+          </span>
+        )}
       </div>
-    </div>
+    </Tag>
   )
 }
 
@@ -293,6 +326,7 @@ export default function Portfolio() {
               meta={PROJECT_META[index]}
               index={index}
               isVisible={isVisible}
+              labels={t.portfolio}
             />
           ))}
         </div>

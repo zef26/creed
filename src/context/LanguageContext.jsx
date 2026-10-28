@@ -94,6 +94,8 @@ export const translations = {
     portfolio: {
       title: "Our Work",
       subtitle: "Selected Projects",
+      inDevelopment: "In development",
+      visit: "Open site",
       projects: [
         {
           title: "Siyob Ferma",
@@ -298,6 +300,8 @@ export const translations = {
     portfolio: {
       title: "Наши работы",
       subtitle: "Избранные проекты",
+      inDevelopment: "В разработке",
+      visit: "Открыть сайт",
       projects: [
         {
           title: "Siyob Ferma",
@@ -502,6 +506,8 @@ export const translations = {
     portfolio: {
       title: "Ishlarimiz",
       subtitle: "Tanlangan loyihalar",
+      inDevelopment: "Ishlab chiqilmoqda",
+      visit: "Saytni ochish",
       projects: [
         {
           title: "Siyob Ferma",
