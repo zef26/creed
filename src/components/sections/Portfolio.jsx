@@ -9,7 +9,11 @@ const PROJECT_META = [
   { color: "#38BDF8", image: "/portfolio/qanchachiqadi.jpg", url: "https://qanchachiqadi.uz" },
   { color: "#a78bfa", image: "/portfolio/qoshni.jpg", url: "https://qoshni.uz", inDevelopment: true },
   { color: "#fb923c", mockup: 3 }, // Parcha Track — internal system, no public site
+  { color: "#fbbf24", image: "/portfolio/parcha-sklad.jpg" }, // Parcha Sklad — 1C, internal
 ]
+
+// 3 cards in the first row, 2 wide cards in the second
+const SPAN = ["lg:col-span-2", "lg:col-span-2", "lg:col-span-2", "lg:col-span-3", "lg:col-span-3"]
 
 // CSS-only mockup visuals
 const MOCKUPS = [
@@ -142,7 +146,7 @@ function ProjectCard({ project, meta, index, isVisible, labels }) {
   return (
     <Tag
       {...(meta.url ? { href: meta.url, target: "_blank", rel: "noopener noreferrer" } : {})}
-      className={`relative block rounded-2xl overflow-hidden ${meta.url ? "cursor-pointer" : "cursor-default"}`}
+      className={`relative block rounded-2xl overflow-hidden ${SPAN[index] || ""} ${meta.url ? "cursor-pointer" : "cursor-default"}`}
       style={{
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? "translateY(0)" : "translateY(28px)",
@@ -318,7 +322,7 @@ export default function Portfolio() {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 sm:gap-5">
           {projects.map((project, index) => (
             <ProjectCard
               key={index}

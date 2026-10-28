@@ -117,6 +117,11 @@ export const translations = {
           category: "Automation",
           description: "Automated checkpoint system: plate recognition, access control and blacklist checks, operator console and management dashboard.",
         },
+        {
+          title: "Parcha Sklad",
+          category: "1C:ERP",
+          description: "1C configuration for a manufacturer: warehouse and workshops, purchasing and goods receipt, PPE, access-control logs, payroll, financial results and stock by batch.",
+        },
       ],
     },
     team: {
@@ -323,6 +328,11 @@ export const translations = {
           category: "Автоматизация",
           description: "Система автоматизированного КПП: распознавание номеров, СКУД и стоп-лист, пульт оператора и дашборд руководителя.",
         },
+        {
+          title: "Parcha Sklad",
+          category: "1С:ERP",
+          description: "Конфигурация 1С для производства: склад и цеха, закупки и приёмка материалов, СИЗ, проходы СКУД, ФОТ, финансовый результат и остатки продукции по партиям.",
+        },
       ],
     },
     team: {
@@ -528,6 +538,11 @@ export const translations = {
           title: "Parcha Track",
           category: "Avtomatlashtirish",
           description: "Avtomatlashtirilgan KPP tizimi: raqamlarni aniqlash, kirish nazorati va qora ro'yxat, operator pulti va rahbar dashbordi.",
+        },
+        {
+          title: "Parcha Sklad",
+          category: "1C:ERP",
+          description: "Ishlab chiqarish uchun 1C konfiguratsiyasi: ombor va sexlar, xarid va materiallarni qabul qilish, SHHV, SKUD o'tishlari, ish haqi fondi, moliyaviy natija va partiyalar bo'yicha qoldiqlar.",
         },
       ],
     },
