@@ -3,13 +3,12 @@ import { useEffect, useRef, useState } from "react"
 import { useLanguage } from "../../context/LanguageContext"
 import CanvasBg from "../ui/CanvasBg"
 
+// mockup = index into MOCKUPS below
 const PROJECT_META = [
-  { color: "#fb923c" }, // 1C ERP
-  { color: "#38BDF8" }, // Web
-  { color: "#f472b6" }, // Flutter / Mobile
-  { color: "#4ade80" }, // Backend
-  { color: "#f472b6" }, // React Native
-  { color: "#a78bfa" }, // Web + Backend
+  { color: "#4ade80", mockup: 1 }, // Siyob Ferma — website
+  { color: "#38BDF8", mockup: 0 }, // Qancha chiqadi — calculators
+  { color: "#a78bfa", mockup: 5 }, // Qo'shni — platform / CRM
+  { color: "#fb923c", mockup: 3 }, // Parcha Track — checkpoint system
 ]
 
 // CSS-only mockup visuals
@@ -76,17 +75,15 @@ const MOCKUPS = [
   ({ color }) => (
     <div className="absolute inset-0 p-4 font-mono text-[9px] leading-relaxed overflow-hidden pt-8">
       {[
-        { c: color, t: "POST /api/events" },
-        { c: "rgba(255,255,255,0.2)", t: 'Content-Type: application/json' },
-        { c: "rgba(255,255,255,0.12)", t: '{ "batch": 2400 }' },
-        { c: "#4ade80", t: "200 OK — 14ms" },
+        { c: color, t: "vehicle.detected" },
+        { c: "rgba(255,255,255,0.2)", t: "lpr: plate recognised" },
+        { c: "rgba(255,255,255,0.2)", t: "access: check" },
+        { c: "rgba(255,255,255,0.2)", t: "blacklist: check" },
+        { c: "#4ade80", t: "✓ gate.open" },
         { c: "rgba(255,255,255,0.08)", t: "──────────────────" },
-        { c: color, t: "GET /api/report/daily" },
-        { c: "rgba(255,255,255,0.2)", t: "Authorization: Bearer ..." },
-        { c: "#4ade80", t: "200 OK — 38ms" },
-        { c: "rgba(255,255,255,0.08)", t: "──────────────────" },
-        { c: "rgba(255,255,255,0.18)", t: "Throughput: 2.1M req/day" },
-        { c: "rgba(255,255,255,0.1)", t: "Avg latency: 22ms p99" },
+        { c: color, t: "vehicle.detected" },
+        { c: "rgba(255,255,255,0.2)", t: "lpr: plate recognised" },
+        { c: "#fbbf24", t: "→ manual.review" },
       ].map((line, i) => <div key={i} style={{ color: line.c }}>{line.t}</div>)}
     </div>
   ),
@@ -118,7 +115,7 @@ const MOCKUPS = [
   ({ color }) => (
     <div className="absolute inset-0 p-4 flex flex-col gap-2 pt-8">
       <div className="flex gap-2">
-        {[["2.1M", 0.5], ["98.9%", 0.3], ["22ms", 0.4]].map(([val, op], i) => (
+        {[["CRM", 0.5], ["Leads", 0.3], ["Deals", 0.4]].map(([val, op], i) => (
           <div key={i} className="flex-1 rounded-lg p-2" style={{ background: `${color}${Math.round(op * 80).toString(16).padStart(2, "0")}` }}>
             <div className="h-1 rounded-full bg-white/30 w-2/3 mb-1" />
             <div className="text-[10px] font-bold" style={{ color, opacity: 0.9 }}>{val}</div>
@@ -138,7 +135,7 @@ const MOCKUPS = [
 
 function ProjectCard({ project, meta, index, isVisible }) {
   const [hovered, setHovered] = useState(false)
-  const MockupComponent = MOCKUPS[index]
+  const MockupComponent = MOCKUPS[meta.mockup]
 
   return (
     <div
@@ -288,7 +285,7 @@ export default function Portfolio() {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
           {projects.map((project, index) => (
             <ProjectCard
               key={index}
